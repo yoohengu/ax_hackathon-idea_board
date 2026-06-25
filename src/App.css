@@ -9,6 +9,13 @@
   margin-bottom: 24px;
 }
 
+.app-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
 .app-header h1 {
   font-size: 32px;
   margin-bottom: 8px;
@@ -16,6 +23,34 @@
 
 .app-header p {
   color: var(--text-muted);
+}
+
+.theme-toggle {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.theme-toggle:hover {
+  background: var(--bg);
+}
+
+.toggle-btn {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.toggle-btn:hover {
+  background: var(--border);
 }
 
 .card {

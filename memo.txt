@@ -1,3 +1,9 @@
-1. react로 해커톤 아이디어 보드를 만들거야 CRUD 기능이 들어있는 아이디어·실현 가능성·메모 저장할 수 있는 걸로 추후에 supabase에 연결할 것을 면두에 두고 만들어줘
+1. react로 해커톤 아이디어 보드를 만들거야 CRUD 기능이 들어있는 아이디어·실현 가능성·메모 저장할 수 있는 걸로  
+    추후에 supabase에 연결할 것을 염두에 두고 만들어줘
 
 2. https://github.com/yoohengu/ax_hackathon-idea_board.git 이 깃 연결해줘. 그리고 push 해줘
+
+3. 키 연결
+
+4. 이제 ax_hackathon-idea_board에 맞게 supabase 구성하고 연결해줘
+    ax_hackathon-idea_board의 정보가 supabase에 잘 저장되게 해줘

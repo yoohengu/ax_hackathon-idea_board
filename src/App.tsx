@@ -6,12 +6,19 @@ import { ideaRepository } from "./data";
 import type { Feasibility, Idea, IdeaInput } from "./types/idea";
 
 type FeasibilityFilter = "all" | Feasibility;
+type Theme = "dark" | "light";
+
+const THEME_STORAGE_KEY = "hackathon-idea-board:theme";
 
 function App() {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingIdea, setEditingIdea] = useState<Idea | null>(null);
   const [filter, setFilter] = useState<FeasibilityFilter>("all");
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [theme, setTheme] = useState<Theme>(
+    () => (localStorage.getItem(THEME_STORAGE_KEY) as Theme | null) ?? "dark"
+  );
 
   useEffect(() => {
     ideaRepository.getAll().then((data) => {
@@ -19,6 +26,15 @@ function App() {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }, [theme]);
+
+  useEffect(() => {
+    if (editingIdea) setIsFormOpen(true);
+  }, [editingIdea]);
 
   const visibleIdeas = useMemo(
     () => (filter === "all" ? ideas : ideas.filter((idea) => idea.feasibility === filter)),
@@ -46,6 +62,11 @@ function App() {
     }
   }
 
+  function handleCancelEdit() {
+    setEditingIdea(null);
+    setIsFormOpen(false);
+  }
+
   async function handleToggleCompleted(idea: Idea, completed: boolean) {
     const updated = await ideaRepository.setCompleted(idea.id, completed);
     setIdeas((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
@@ -54,19 +75,37 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>🚀 해커톤 아이디어 보드</h1>
+        <div className="app-header-top">
+          <h1>🚀 해커톤 아이디어 보드</h1>
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+          >
+            {theme === "dark" ? "☀️ 라이트 모드" : "🌙 다크 모드"}
+          </button>
+        </div>
         <p>아이디어, 실현 가능성, 메모를 한곳에서 관리하세요.</p>
       </header>
 
       <section className="card">
-        <h2>{editingIdea ? "아이디어 수정" : "새 아이디어 추가"}</h2>
-        <IdeaForm
-          key={editingIdea?.id ?? "new"}
-          initialValue={editingIdea ?? undefined}
-          submitLabel={editingIdea ? "수정 완료" : "추가하기"}
-          onSubmit={editingIdea ? handleUpdate : handleCreate}
-          onCancel={editingIdea ? () => setEditingIdea(null) : undefined}
-        />
+        <div className="list-header">
+          <h2>{editingIdea ? "아이디어 수정" : "새 아이디어 추가"}</h2>
+          {!editingIdea && (
+            <button type="button" className="toggle-btn" onClick={() => setIsFormOpen((v) => !v)}>
+              {isFormOpen ? "닫기 ▲" : "열기 ▼"}
+            </button>
+          )}
+        </div>
+        {(isFormOpen || editingIdea) && (
+          <IdeaForm
+            key={editingIdea?.id ?? "new"}
+            initialValue={editingIdea ?? undefined}
+            submitLabel={editingIdea ? "수정 완료" : "추가하기"}
+            onSubmit={editingIdea ? handleUpdate : handleCreate}
+            onCancel={editingIdea ? handleCancelEdit : undefined}
+          />
+        )}
       </section>
 
       <section className="card">
